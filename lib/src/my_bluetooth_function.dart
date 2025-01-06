@@ -228,8 +228,9 @@ class MyBluetooth {
         filter = filter.where((element) {
           var pass = true;
 
-          if (withRemoteIds.isNotEmpty)
+          if (withRemoteIds.isNotEmpty) {
             pass = withRemoteIds.contains(element.remoteId);
+          }
 
           if (withNames.isNotEmpty) {
             if (element.platformName == null) return false;

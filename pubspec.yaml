@@ -1,8 +1,7 @@
 name: my_bluetooth
-description: "My Bluetooth - Connecting and transferring data to other devices using Bluetooth "
-version: 1.0.1
-maintainer: "Ducnguyen and Thaodoan"
-homepage: https://github.com/ngmduc2012/my_bluetooth
+description: My Bluetooth - Connecting and transferring data to other devices using Bluetooth
+version: 1.0.2
+maintainer: Ducnguyen (Wong) and Thaodoan (Mia)
 repository: https://github.com/ngmduc2012/my_bluetooth
 
 environment:

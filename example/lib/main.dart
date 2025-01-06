@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -100,7 +99,7 @@ class _MyAppState extends State<MyApp> {
                   height: 20,
                 ),
                 const Text("Step 3: Connect"),
-                Text("is connecting: ${_connectState}"),
+                Text("is connecting: $_connectState"),
                 TextButton(
                     onPressed: () async {
                       print(await _myBluetooth.disconnect());
@@ -145,7 +144,7 @@ class _MyAppState extends State<MyApp> {
                         ],
                       ),
                     ),
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width / 3 * 2,
                       height: 140,
                       child: ListView.builder(
