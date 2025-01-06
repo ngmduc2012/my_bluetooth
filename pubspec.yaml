@@ -1,6 +1,6 @@
 name: my_bluetooth
 description: "My Bluetooth - Every thing about bluetooth"
-version: 0.0.1
+version: 1.0.0
 homepage:
 
 environment:

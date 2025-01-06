@@ -2,7 +2,7 @@
 part of '../my_bluetooth.dart';
 
 /// Step 1: On/Off Bluetooth
-enum ZPBluetoothAdapterState {
+enum MPBluetoothAdapterState {
   unknown, // 0
   unavailable, // 1
   unauthorized, // 2
@@ -13,7 +13,7 @@ enum ZPBluetoothAdapterState {
 }
 
 class BmBluetoothAdapterState {
-  ZPBluetoothAdapterState adapterState;
+  MPBluetoothAdapterState adapterState;
 
   BmBluetoothAdapterState({required this.adapterState});
 
@@ -25,7 +25,7 @@ class BmBluetoothAdapterState {
 
   factory BmBluetoothAdapterState.fromMap(Map<dynamic, dynamic> json) {
     return BmBluetoothAdapterState(
-      adapterState: ZPBluetoothAdapterState.values[json['adapter_state']],
+      adapterState: MPBluetoothAdapterState.values[json['adapter_state']],
     );
   }
 }
@@ -64,20 +64,20 @@ class BmTurnOnResponse {
   }
 }
 
-enum ZPConnectionStateEnum {
+enum MPConnectionStateEnum {
   disconnected, // 0
   connected, // 1  == mConnectThread success
   waiting, // 2
   communicated; // 3 == mConnectedThread success && Set Info of Accessory
 
-  bool get isConnected => this == ZPConnectionStateEnum.connected;
-  bool get isWaiting => this == ZPConnectionStateEnum.waiting;
-  bool get isDisconnected => this == ZPConnectionStateEnum.disconnected;
+  bool get isConnected => this == MPConnectionStateEnum.connected;
+  bool get isWaiting => this == MPConnectionStateEnum.waiting;
+  bool get isDisconnected => this == MPConnectionStateEnum.disconnected;
 
 }
 
 class ConnectionStateResponse {
-  final ZPConnectionStateEnum connectionState;
+  final MPConnectionStateEnum connectionState;
   final String? message;
 
   const ConnectionStateResponse({
@@ -87,43 +87,43 @@ class ConnectionStateResponse {
 
   factory ConnectionStateResponse.fromMap(Map<dynamic, dynamic> json) {
     return ConnectionStateResponse(
-      connectionState: ZPConnectionStateEnum.values[json['connection_state'] as int],
+      connectionState: MPConnectionStateEnum.values[json['connection_state'] as int],
       message: json['message'] as String?,
     );
   }
 }
 
-enum ZPBondEnum {
+enum MPBondEnum {
   none(code:  10),
   bonding(code: 11), 
   bonded(code: 12);
   
-  const ZPBondEnum({ required this.code});
+  const MPBondEnum({ required this.code});
   
   final int code;
 
-  static ZPBondEnum? findByCode(int code){
+  static MPBondEnum? findByCode(int code){
     try {
-      return ZPBondEnum.values.where((e) => e.code == code).first;
+      return MPBondEnum.values.where((e) => e.code == code).first;
     } catch (e) {
       return null;
     }
   }
 }
 
-enum ZPDeviceTypeEnum {
+enum MPDeviceTypeEnum {
   unknown(code:  0),
   classic(code: 1),
   le(code: 2),
   dual(code: 3);
 
-  const ZPDeviceTypeEnum({ required this.code});
+  const MPDeviceTypeEnum({ required this.code});
 
   final int code;
 
-  static ZPDeviceTypeEnum? findByCode(int code){
+  static MPDeviceTypeEnum? findByCode(int code){
     try {
-      return ZPDeviceTypeEnum.values.where((e) => e.code == code).first;
+      return MPDeviceTypeEnum.values.where((e) => e.code == code).first;
     } catch (e) {
       return null;
     }
@@ -133,8 +133,8 @@ enum ZPDeviceTypeEnum {
 class BluetoothDevice {
   String remoteId;
   String? platformName;
-  ZPDeviceTypeEnum? type;
-  ZPBondEnum? bondState;
+  MPDeviceTypeEnum? type;
+  MPBondEnum? bondState;
 
   BluetoothDevice({
     required this.remoteId,
@@ -170,8 +170,8 @@ class BluetoothDevice {
     return BluetoothDevice(
       remoteId: json['remote_id'],
       platformName: json['platform_name'],
-      type: ZPDeviceTypeEnum.findByCode(json['type']),
-      bondState: ZPBondEnum.findByCode(json['bond_state']),
+      type: MPDeviceTypeEnum.findByCode(json['type']),
+      bondState: MPBondEnum.findByCode(json['bond_state']),
     );
   }
   /// Handle for list data:

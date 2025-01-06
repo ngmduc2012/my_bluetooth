@@ -64,27 +64,27 @@ class MyBluetooth {
       }
 
       // wait for adapter to turn on
-      await adapterState.where((s) => s == ZPBluetoothAdapterState.on).first;
+      await adapterState.where((s) => s == MPBluetoothAdapterState.on).first;
     }
   }
 
 
   // 2.3: adapterState (Lắng nghe trạng thái của bluetooth bằng stream)
-  ZPBluetoothAdapterState? _adapterStateNow;
+  MPBluetoothAdapterState? _adapterStateNow;
 
   // The current adapter state
-  ZPBluetoothAdapterState get adapterStateNow =>
-      _adapterStateNow != null ? _adapterStateNow! : ZPBluetoothAdapterState.unknown;
+  MPBluetoothAdapterState get adapterStateNow =>
+      _adapterStateNow != null ? _adapterStateNow! : MPBluetoothAdapterState.unknown;
 
   // Gets the current state of the Bluetooth module
-  Stream<ZPBluetoothAdapterState> get adapterState async* {
+  Stream<MPBluetoothAdapterState> get adapterState async* {
     // get current state if needed
     if (_adapterStateNow == null) {
-      ZPBluetoothAdapterState val =
+      MPBluetoothAdapterState val =
       await _invokeMethod('getAdapterState').then((args) => BmBluetoothAdapterState.fromMap(args).adapterState);
       // update _adapterStateNow if it is still null after the await
       _adapterStateNow ??= val;
-      yield _adapterStateNow ?? ZPBluetoothAdapterState.on;
+      yield _adapterStateNow ?? MPBluetoothAdapterState.on;
     }
 
     yield* _methodStream.stream
@@ -275,7 +275,7 @@ class MyBluetooth {
         .where((m) => m.method == "OnConnectionStateChanged")
         .map((m) => m.arguments)
         .map((args) => ConnectionStateResponse.fromMap(args))
-        .newStreamWithInitialValue(const ConnectionStateResponse(connectionState: ZPConnectionStateEnum.disconnected));
+        .newStreamWithInitialValue(const ConnectionStateResponse(connectionState: MPConnectionStateEnum.disconnected));
   }
 
   Future<bool> isConnected() async {
@@ -283,7 +283,7 @@ class MyBluetooth {
     try {
       final result =  await _invokeMethod('isConnected');
       MethodCall methodCall = MethodCall("OnConnectionStateChanged", {
-        'connection_state': (result ? ZPConnectionStateEnum.connected :  ZPConnectionStateEnum.disconnected).index,
+        'connection_state': (result ? MPConnectionStateEnum.connected :  MPConnectionStateEnum.disconnected).index,
       });
       _updateMethodStream(methodCall);
 

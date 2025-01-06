@@ -21,13 +21,13 @@ class _MyAppState extends State<MyApp> {
 
   final _myBluetooth = MyBluetooth();
 
-  ZPBluetoothAdapterState _adapterState = ZPBluetoothAdapterState.unknown;
-  late StreamSubscription<ZPBluetoothAdapterState> _adapterStateStateSubscription;
+  MPBluetoothAdapterState _adapterState = MPBluetoothAdapterState.unknown;
+  late StreamSubscription<MPBluetoothAdapterState> _adapterStateStateSubscription;
 
   bool _isScanning = false;
   late StreamSubscription<bool> _isScanningSubscription;
 
-  ZPConnectionStateEnum _connectState = ZPConnectionStateEnum.disconnected;
+  MPConnectionStateEnum _connectState = MPConnectionStateEnum.disconnected;
   late StreamSubscription<ConnectionStateResponse> _connectStateSubscription;
 
   late StreamSubscription<List<BluetoothDevice>> _scanResultsSubscription;
@@ -213,7 +213,7 @@ class _MyAppState extends State<MyApp> {
                     onPressed: () async {
 
                       if (image != null) {
-                        print(await await _myBluetooth.sendFile(
+                        print( await _myBluetooth.sendFile(
                             pathImage: image?.path));
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
