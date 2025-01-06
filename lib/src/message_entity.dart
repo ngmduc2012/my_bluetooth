@@ -1,4 +1,3 @@
-
 part of '../my_bluetooth.dart';
 
 /// Step 1: On/Off Bluetooth
@@ -30,7 +29,6 @@ class BmBluetoothAdapterState {
   }
 }
 
-
 class BluetoothDiscoveryState {
   bool discoveryState;
 
@@ -48,7 +46,6 @@ class BluetoothDiscoveryState {
     );
   }
 }
-
 
 class BmTurnOnResponse {
   bool userAccepted;
@@ -73,7 +70,6 @@ enum MPConnectionStateEnum {
   bool get isConnected => this == MPConnectionStateEnum.connected;
   bool get isWaiting => this == MPConnectionStateEnum.waiting;
   bool get isDisconnected => this == MPConnectionStateEnum.disconnected;
-
 }
 
 class ConnectionStateResponse {
@@ -87,22 +83,23 @@ class ConnectionStateResponse {
 
   factory ConnectionStateResponse.fromMap(Map<dynamic, dynamic> json) {
     return ConnectionStateResponse(
-      connectionState: MPConnectionStateEnum.values[json['connection_state'] as int],
+      connectionState:
+          MPConnectionStateEnum.values[json['connection_state'] as int],
       message: json['message'] as String?,
     );
   }
 }
 
 enum MPBondEnum {
-  none(code:  10),
-  bonding(code: 11), 
+  none(code: 10),
+  bonding(code: 11),
   bonded(code: 12);
-  
-  const MPBondEnum({ required this.code});
-  
+
+  const MPBondEnum({required this.code});
+
   final int code;
 
-  static MPBondEnum? findByCode(int code){
+  static MPBondEnum? findByCode(int code) {
     try {
       return MPBondEnum.values.where((e) => e.code == code).first;
     } catch (e) {
@@ -112,16 +109,16 @@ enum MPBondEnum {
 }
 
 enum MPDeviceTypeEnum {
-  unknown(code:  0),
+  unknown(code: 0),
   classic(code: 1),
   le(code: 2),
   dual(code: 3);
 
-  const MPDeviceTypeEnum({ required this.code});
+  const MPDeviceTypeEnum({required this.code});
 
   final int code;
 
-  static MPDeviceTypeEnum? findByCode(int code){
+  static MPDeviceTypeEnum? findByCode(int code) {
     try {
       return MPDeviceTypeEnum.values.where((e) => e.code == code).first;
     } catch (e) {
@@ -146,16 +143,19 @@ class BluetoothDevice {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is BluetoothDevice
-              && runtimeType == other.runtimeType
-              && remoteId == other.remoteId
-              && platformName == other.platformName
-              && type == other.type
-              && bondState == other.bondState
-  ;
+      other is BluetoothDevice &&
+          runtimeType == other.runtimeType &&
+          remoteId == other.remoteId &&
+          platformName == other.platformName &&
+          type == other.type &&
+          bondState == other.bondState;
 
   @override
-  int get hashCode => remoteId.hashCode ^ platformName.hashCode ^ type.hashCode ^ platformName.hashCode;
+  int get hashCode =>
+      remoteId.hashCode ^
+      platformName.hashCode ^
+      type.hashCode ^
+      platformName.hashCode;
 
   Map<dynamic, dynamic> toMap() {
     final Map<dynamic, dynamic> data = {};
@@ -174,13 +174,24 @@ class BluetoothDevice {
       bondState: MPBondEnum.findByCode(json['bond_state']),
     );
   }
+
   /// Handle for list data:
-  static List<BluetoothDevice> fromJsonToListTypeJson(dynamic json) => List<BluetoothDevice>.from((json as List<Object?>).map((e) => e == null ? null : BluetoothDevice.fromMap(e as Map<dynamic, dynamic>)),);
+  static List<BluetoothDevice> fromJsonToListTypeJson(dynamic json) =>
+      List<BluetoothDevice>.from(
+        (json as List<Object?>).map((e) => e == null
+            ? null
+            : BluetoothDevice.fromMap(e as Map<dynamic, dynamic>)),
+      );
 
-  static List<BluetoothDevice> fromJsonToListTypeString(String data) => List<BluetoothDevice>.from((json.decode(data) as List<Object?>).map((e) => e == null ? null : BluetoothDevice.fromMap(e as Map<dynamic, dynamic>)),);
+  static List<BluetoothDevice> fromJsonToListTypeString(String data) =>
+      List<BluetoothDevice>.from(
+        (json.decode(data) as List<Object?>).map((e) => e == null
+            ? null
+            : BluetoothDevice.fromMap(e as Map<dynamic, dynamic>)),
+      );
 
-  static List<dynamic>? toListJson(List<BluetoothDevice>? list) => list == null ? null : List<dynamic>.from(list.map((e) => e.toMap()));
-
+  static List<dynamic>? toListJson(List<BluetoothDevice>? list) =>
+      list == null ? null : List<dynamic>.from(list.map((e) => e.toMap()));
 }
 
 class CommandResponse {
@@ -202,14 +213,14 @@ enum ErrorPlatform {
   android,
   apple,
 }
-
+/*
 final ErrorPlatform _nativeError = (() {
   if (Platform.isAndroid) {
     return ErrorPlatform.android;
   } else {
     return ErrorPlatform.apple;
   }
-})();
+})();*/
 
 enum FbpErrorCode {
   success,
@@ -239,7 +250,8 @@ class FlutterBluePlusException implements Exception {
   /// note: depends on platform
   final String? description;
 
-  FlutterBluePlusException(this.platform, this.function, this.code, this.description);
+  FlutterBluePlusException(
+      this.platform, this.function, this.code, this.description);
 
   @override
   String toString() {
@@ -265,9 +277,6 @@ class CommandFromNativeResponse {
   });
 
   factory CommandFromNativeResponse.fromMap(Map<dynamic, dynamic> json) {
-    return CommandFromNativeResponse(
-        message: json['message'] as String
-    );
+    return CommandFromNativeResponse(message: json['message'] as String);
   }
 }
-

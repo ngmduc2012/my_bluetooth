@@ -10,7 +10,7 @@ enum ZPAutoExposureEnum {
   final int byte;
 
   static ZPAutoExposureEnum? findByCode(int? code) {
-    if(code == null) return null;
+    if (code == null) return null;
     try {
       return ZPAutoExposureEnum.values.where((e) => e.code == code).first;
     } catch (e) {
@@ -25,14 +25,15 @@ enum ZPAutoPowerOffEnum {
   min5(code: 2, byte: 0x08, minute: 5),
   min10(code: 3, byte: 0x0c, minute: 10);
 
-  const ZPAutoPowerOffEnum({required this.code, required this.byte, required this.minute});
+  const ZPAutoPowerOffEnum(
+      {required this.code, required this.byte, required this.minute});
 
   final int code;
   final int byte;
   final int minute;
 
   static ZPAutoPowerOffEnum? findByCode(int? code) {
-    if(code == null) return null;
+    if (code == null) return null;
     try {
       return ZPAutoPowerOffEnum.values.where((e) => e.code == code).first;
     } catch (e) {
@@ -71,7 +72,7 @@ enum ZPDataClassificationEnum {
   final int byte;
 
   static ZPDataClassificationEnum? findByCode(int? code) {
-    if(code == null) return null;
+    if (code == null) return null;
     try {
       return ZPDataClassificationEnum.values.where((e) => e.code == code).first;
     } catch (e) {
@@ -84,7 +85,6 @@ enum ZPSkipEdgeEnhancementEnum {
   eEFromApp(code: 0, byte: 0x00),
   eEFromPrinter(code: 1, byte: 0x01);
 
-
   const ZPSkipEdgeEnhancementEnum({required this.code, required this.byte});
 
   final int code;
@@ -92,10 +92,11 @@ enum ZPSkipEdgeEnhancementEnum {
 
   static ZPSkipEdgeEnhancementEnum? findByCode(int code) {
     try {
-      return ZPSkipEdgeEnhancementEnum.values.where((e) => e.code == code).first;
+      return ZPSkipEdgeEnhancementEnum.values
+          .where((e) => e.code == code)
+          .first;
     } catch (e) {
       return null;
     }
   }
 }
-

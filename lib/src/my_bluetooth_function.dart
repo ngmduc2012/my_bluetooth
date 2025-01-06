@@ -1,12 +1,12 @@
 part of '../my_bluetooth.dart';
 
 class MyBluetooth {
-
   /// STEP I | setup method
 
   static const String nameMethod = 'my_bluetooth';
   static const MethodChannel _methods = MethodChannel('$nameMethod/methods');
-  final StreamController<MethodCall> _methodStream = StreamController.broadcast();
+  final StreamController<MethodCall> _methodStream =
+      StreamController.broadcast();
 
   // 1.1: Create stream method
   bool _initialized = false;
@@ -60,7 +60,8 @@ class MyBluetooth {
 
       // check response
       if (response.userAccepted == false) {
-        throw FlutterBluePlusException(ErrorPlatform.fbp, "turnOn", FbpErrorCode.userRejected.index, "user rejected");
+        throw FlutterBluePlusException(ErrorPlatform.fbp, "turnOn",
+            FbpErrorCode.userRejected.index, "user rejected");
       }
 
       // wait for adapter to turn on
@@ -68,20 +69,20 @@ class MyBluetooth {
     }
   }
 
-
   // 2.3: adapterState (Lắng nghe trạng thái của bluetooth bằng stream)
   MPBluetoothAdapterState? _adapterStateNow;
 
   // The current adapter state
-  MPBluetoothAdapterState get adapterStateNow =>
-      _adapterStateNow != null ? _adapterStateNow! : MPBluetoothAdapterState.unknown;
+  MPBluetoothAdapterState get adapterStateNow => _adapterStateNow != null
+      ? _adapterStateNow!
+      : MPBluetoothAdapterState.unknown;
 
   // Gets the current state of the Bluetooth module
   Stream<MPBluetoothAdapterState> get adapterState async* {
     // get current state if needed
     if (_adapterStateNow == null) {
-      MPBluetoothAdapterState val =
-      await _invokeMethod('getAdapterState').then((args) => BmBluetoothAdapterState.fromMap(args).adapterState);
+      MPBluetoothAdapterState val = await _invokeMethod('getAdapterState')
+          .then((args) => BmBluetoothAdapterState.fromMap(args).adapterState);
       // update _adapterStateNow if it is still null after the await
       _adapterStateNow ??= val;
       yield _adapterStateNow ?? MPBluetoothAdapterState.on;
@@ -99,7 +100,8 @@ class MyBluetooth {
   // 3.1: Retrieve a list of bonded devices (Android only)
   Future<List<BluetoothDevice>> get bondedDevices async {
     try {
-      List<BluetoothDevice> response = await _invokeMethod('getBondedDevices').then((args) {
+      List<BluetoothDevice> response =
+          await _invokeMethod('getBondedDevices').then((args) {
         List<BluetoothDevice> devices = [];
         for (var i = 0; i < args['devices'].length; i++) {
           devices.add(BluetoothDevice.fromMap(args['devices'][i]));
@@ -121,7 +123,7 @@ class MyBluetooth {
         .map((args) => BluetoothDiscoveryState.fromMap(args))
         .map((s) {
       isDiscovering = s.discoveryState;
-      if(!isDiscovering) {
+      if (!isDiscovering) {
         _scanBuffer?.close();
         _scanSubscription?.cancel();
         for (var subscription in _scanSubscriptions) {
@@ -129,8 +131,7 @@ class MyBluetooth {
         }
       }
       return isDiscovering;
-    })
-        .newStreamWithInitialValue(isDiscovering);
+    }).newStreamWithInitialValue(isDiscovering);
   }
 
   // 3.3 Scan device
@@ -139,7 +140,8 @@ class MyBluetooth {
 
   // Get result
   // stream used for the scanResults public api
-  final _scanResults = _StreamControllerReEmit<List<BluetoothDevice>>(initialValue: []);
+  final _scanResults =
+      _StreamControllerReEmit<List<BluetoothDevice>>(initialValue: []);
   final List<StreamSubscription> _scanSubscriptions = [];
   // the subscription to the merged scan results stream
   StreamSubscription<List<BluetoothDevice>?>? _scanSubscription;
@@ -167,7 +169,6 @@ class MyBluetooth {
     Duration? removeIfGone,
     bool androidUsesFineLocation = true,
   }) async {
-
     // already scanning?
     if (isDiscovering) {
       // stop existing scan
@@ -192,11 +193,11 @@ class MyBluetooth {
     // Start listening now, before invokeMethod, so we do not miss any results
     _scanBuffer = _BufferStream.listen(responseStream);
 
-    var settings = BmScanSettings(
-        androidUsesFineLocation: androidUsesFineLocation);
+    var settings =
+        BmScanSettings(androidUsesFineLocation: androidUsesFineLocation);
 
     try {
-      await _invokeMethod('startScan', settings.toMap()).onError((e,s) {
+      await _invokeMethod('startScan', settings.toMap()).onError((e, s) {
         print('onError | startScan');
         print(e);
         print(s);
@@ -208,7 +209,10 @@ class MyBluetooth {
 
     // check every 250ms for gone devices?
     late Stream<List<BluetoothDevice>?> outputStream = removeIfGone != null
-        ? _mergeStreams([_scanBuffer!.stream, Stream.periodic(const Duration(milliseconds: 250))])
+        ? _mergeStreams([
+            _scanBuffer!.stream,
+            Stream.periodic(const Duration(milliseconds: 250))
+          ])
         : _scanBuffer!.stream;
 
     // start by pushing an empty array
@@ -219,24 +223,24 @@ class MyBluetooth {
     // listen & push to `scanResults` stream
     _scanSubscription = outputStream.listen((List<BluetoothDevice>? response) {
       if (response != null) {
-
         // Filter
         List<BluetoothDevice>? filter = response.toSet().toList();
         filter = filter.where((element) {
           var pass = true;
 
-          if(withRemoteIds.isNotEmpty) pass = withRemoteIds.contains(element.remoteId);
+          if (withRemoteIds.isNotEmpty)
+            pass = withRemoteIds.contains(element.remoteId);
 
-          if(withNames.isNotEmpty) {
-            if(element.platformName == null) return false;
+          if (withNames.isNotEmpty) {
+            if (element.platformName == null) return false;
             pass = withNames.contains(element.platformName!.trim());
           }
-          if(withKeywords.isNotEmpty) {
+          if (withKeywords.isNotEmpty) {
             pass = false;
-            if(element.platformName == null) return false;
-            for(final i in withKeywords){
+            if (element.platformName == null) return false;
+            for (final i in withKeywords) {
               var result = element.platformName!.contains(i);
-              if(result){
+              if (result) {
                 pass = result;
                 break;
               }
@@ -253,11 +257,13 @@ class MyBluetooth {
   // 3.4: Stop Scan device
   // Stops a scan for Bluetooth Low Energy devices
   Future<bool> stopScan() async {
-    return  await _stopScan();
+    return await _stopScan();
   }
 
   // for internal use
-  Future<bool> _stopScan({bool invokePlatform = true,}) async {
+  Future<bool> _stopScan({
+    bool invokePlatform = true,
+  }) async {
     _scanBuffer?.close();
     _scanSubscription?.cancel();
     for (var subscription in _scanSubscriptions) {
@@ -275,15 +281,18 @@ class MyBluetooth {
         .where((m) => m.method == "OnConnectionStateChanged")
         .map((m) => m.arguments)
         .map((args) => ConnectionStateResponse.fromMap(args))
-        .newStreamWithInitialValue(const ConnectionStateResponse(connectionState: MPConnectionStateEnum.disconnected));
+        .newStreamWithInitialValue(const ConnectionStateResponse(
+            connectionState: MPConnectionStateEnum.disconnected));
   }
 
   Future<bool> isConnected() async {
-
     try {
-      final result =  await _invokeMethod('isConnected');
+      final result = await _invokeMethod('isConnected');
       MethodCall methodCall = MethodCall("OnConnectionStateChanged", {
-        'connection_state': (result ? MPConnectionStateEnum.connected :  MPConnectionStateEnum.disconnected).index,
+        'connection_state': (result
+                ? MPConnectionStateEnum.connected
+                : MPConnectionStateEnum.disconnected)
+            .index,
       });
       _updateMethodStream(methodCall);
 
@@ -296,7 +305,7 @@ class MyBluetooth {
   Future<bool> connect({
     String? remoteId,
   }) async {
-    if(await isConnected()) return false;
+    if (await isConnected()) return false;
 
     final Map<dynamic, dynamic> data = {};
     data['remote_id'] = remoteId;
@@ -304,19 +313,19 @@ class MyBluetooth {
       bool result = await _invokeMethod('connect', data);
 
       Future.delayed(const Duration(seconds: 5), () async {
-         if(await isConnected()){
-           return true;
+        if (await isConnected()) {
+          return true;
         } else {
-           disconnect();
-           return false;
-         }
+          disconnect();
+          return false;
+        }
       });
       return result;
     } catch (e) {
       rethrow;
     }
-
   }
+
   Future<bool> disconnect() async {
     try {
       print("ZEUS PLUGIN | disconnect");
@@ -326,7 +335,7 @@ class MyBluetooth {
     }
   }
 
- /* Stream<CommandResponse> get cmdResponse async* {
+  /* Stream<CommandResponse> get cmdResponse async* {
     yield* _methodStream.stream
         .where((m) => m.method == "OnCommandResponse")
         .map((m) => m.arguments)
@@ -343,12 +352,9 @@ class MyBluetooth {
     });
   }*/
 
-
-
-
   Future<bool> sendCmd(List<int> byte, {int size = 34}) async {
     // assert(data.length <= 34);
-    if(!await isConnected()) return false;
+    if (!await isConnected()) return false;
 
     final Map<dynamic, dynamic> data = {};
     data['byte'] = byte;
@@ -380,14 +386,18 @@ class MyBluetooth {
   }
 
   /// 2. SetInfo of Accessory
-  Future<bool> sendCmdSetInfoOfAccessory(
-      {
-        ZPAutoExposureEnum autoExposure = ZPAutoExposureEnum.on,
-        ZPAutoPowerOffEnum autoPowerOff = ZPAutoPowerOffEnum.off,
-        ZPPrintModeSetInfoEnum printModeSetInfo = ZPPrintModeSetInfoEnum.paperFull,
-      }) async {
+  Future<bool> sendCmdSetInfoOfAccessory({
+    ZPAutoExposureEnum autoExposure = ZPAutoExposureEnum.on,
+    ZPAutoPowerOffEnum autoPowerOff = ZPAutoPowerOffEnum.off,
+    ZPPrintModeSetInfoEnum printModeSetInfo = ZPPrintModeSetInfoEnum.paperFull,
+  }) async {
     try {
-      final result = await sendCmd([...Cmd.setInfoOfAccessory, autoExposure.byte, autoPowerOff.byte, printModeSetInfo.byte ]);
+      final result = await sendCmd([
+        ...Cmd.setInfoOfAccessory,
+        autoExposure.byte,
+        autoPowerOff.byte,
+        printModeSetInfo.byte
+      ]);
       print("ZP | sendCmdSetInfoOfAccessory | $result");
       return result;
     } catch (e) {
@@ -397,10 +407,9 @@ class MyBluetooth {
 
   /// 3. Upgrade Ready
   Future<bool> sendCmdUpgradeReady(
-      {
-       required int dataSize,
-        ZPDataClassificationEnum dataClassification = ZPDataClassificationEnum.tmd
-        }) async {
+      {required int dataSize,
+      ZPDataClassificationEnum dataClassification =
+          ZPDataClassificationEnum.tmd}) async {
     try {
       final result = await sendCmd([
         ...Cmd.upgradeReady,
@@ -419,7 +428,9 @@ class MyBluetooth {
   /// 4. Upgrade Cancel
   Future<bool> sendCmdUpgradeCancel() async {
     try {
-      final result = await sendCmd([...Cmd.upgradeCancel,]);
+      final result = await sendCmd([
+        ...Cmd.upgradeCancel,
+      ]);
       print("ZP | sendCmdUpgradeCancel | $result");
       return result;
     } catch (e) {
@@ -428,21 +439,22 @@ class MyBluetooth {
   }
 
   /// 5. Bulk Transfer
-  Future<bool> sendCmdBulkTransfer(
-      {
-        required int dataSize,
-        required List<int> data,
-      }) async {
+  Future<bool> sendCmdBulkTransfer({
+    required int dataSize,
+    required List<int> data,
+  }) async {
     try {
       final result = await sendCmd([
         ...Cmd.bulkTransfer,
         ((dataSize & 0xff00) >> 8),
         (dataSize & 0xff),
         // ...data.takeWhile((e) => data.indexOf(e) < dataSize)
-        ...(data.length >= dataSize ? data.sublist(0, dataSize > 20 ? 20 : dataSize) : data.length > 20 ? data.sublist(0, 20) : data)
-      ],
-          size: 1024
-      );
+        ...(data.length >= dataSize
+            ? data.sublist(0, dataSize > 20 ? 20 : dataSize)
+            : data.length > 20
+                ? data.sublist(0, 20)
+                : data)
+      ], size: 1024);
       print("ZP | sendCmdBulkTransfer | $result");
       return result;
     } catch (e) {
@@ -462,11 +474,10 @@ class MyBluetooth {
   }
 
   /// 7. Send Text
-  Future<bool> sendText({ required String  value}) async {
+  Future<bool> sendText({required String value}) async {
     try {
-
       List<int> bytes = [...value.stringToBytes];
-      final result = await sendCmd(bytes,size: bytes.length);
+      final result = await sendCmd(bytes, size: bytes.length);
       print("MB | sendTextToDevice | $result");
       return result;
     } catch (e) {
@@ -478,7 +489,8 @@ class MyBluetooth {
   Future<bool> sendCmdPrintReady({
     required int dataSize,
     int printCount = 1,
-    ZPSkipEdgeEnhancementEnum skipEdgeEnhancementEnum = ZPSkipEdgeEnhancementEnum.eEFromPrinter,
+    ZPSkipEdgeEnhancementEnum skipEdgeEnhancementEnum =
+        ZPSkipEdgeEnhancementEnum.eEFromPrinter,
     ZPPrintModeSetInfoEnum printMode = ZPPrintModeSetInfoEnum.imageFull,
   }) async {
     assert(printCount > 0 && printCount < 5, "printCount in [1,...,4]");
@@ -493,7 +505,6 @@ class MyBluetooth {
         0x00,
         skipEdgeEnhancementEnum.byte,
         printMode.byte
-
       ]);
       print("ZP | sendCmdPrintReady | $result");
       return result;
@@ -514,19 +525,16 @@ class MyBluetooth {
   }
 
   /// 10. Clear Job
-  Future<bool> sendCmdClearJob({required int jobID1, required int jobID2,  }) async {
+  Future<bool> sendCmdClearJob({
+    required int jobID1,
+    required int jobID2,
+  }) async {
     try {
-      final result = await sendCmd([...Cmd.clearJob,jobID1, jobID2]);
+      final result = await sendCmd([...Cmd.clearJob, jobID1, jobID2]);
       print("ZP | sendCmdClearJob | $result");
       return result;
     } catch (e) {
       rethrow;
     }
   }
-
-
-
-
-
-
 }

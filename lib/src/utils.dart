@@ -1,6 +1,5 @@
 part of '../my_bluetooth.dart';
 
-
 extension _StreamNewStreamWithInitialValue<T> on Stream<T> {
   Stream<T> newStreamWithInitialValue(T initialValue) {
     return transform(_NewStreamWithInitialValueTransformer(initialValue));
@@ -60,12 +59,9 @@ extension MyBluetoothList on List<int>? {
 
   String get decodeUtf8ToString {
     if (this == null) return "";
-   return utf8.decode(this!);
+    return utf8.decode(this!);
   }
-
 }
-
-
 
 // Helper for 'newStreamWithInitialValue' method for streams.
 class _NewStreamWithInitialValueTransformer<T>

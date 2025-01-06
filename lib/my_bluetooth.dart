@@ -1,4 +1,3 @@
-
 library my_bluetooth;
 
 import 'dart:async';
@@ -13,6 +12,3 @@ part 'src/utils.dart';
 part 'src/cmd.dart';
 part 'src/setting_enums.dart';
 part 'src/reading_enums.dart';
-
-
-

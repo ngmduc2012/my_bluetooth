@@ -22,7 +22,8 @@ class _MyAppState extends State<MyApp> {
   final _myBluetooth = MyBluetooth();
 
   MPBluetoothAdapterState _adapterState = MPBluetoothAdapterState.unknown;
-  late StreamSubscription<MPBluetoothAdapterState> _adapterStateStateSubscription;
+  late StreamSubscription<MPBluetoothAdapterState>
+      _adapterStateStateSubscription;
 
   bool _isScanning = false;
   late StreamSubscription<bool> _isScanningSubscription;
@@ -32,8 +33,6 @@ class _MyAppState extends State<MyApp> {
 
   late StreamSubscription<List<BluetoothDevice>> _scanResultsSubscription;
   List<BluetoothDevice> _scanResults = [];
-
-
 
   @override
   void initState() {
@@ -64,7 +63,6 @@ class _MyAppState extends State<MyApp> {
         setState(() {});
       }
     }, onError: (e) {});
-
   }
 
   @override
@@ -98,7 +96,9 @@ class _MyAppState extends State<MyApp> {
                     child: const Text("turnOn")),
                 const Text("Step 2: Scan device"),
                 Text(" is Scanning : ${_isScanning.toString()}"),
-                const SizedBox(height: 20,),
+                const SizedBox(
+                  height: 20,
+                ),
                 const Text("Step 3: Connect"),
                 Text("is connecting: ${_connectState}"),
                 TextButton(
@@ -106,7 +106,9 @@ class _MyAppState extends State<MyApp> {
                       print(await _myBluetooth.disconnect());
                     },
                     child: const Text("disconnect")),
-                const SizedBox(height: 20,),
+                const SizedBox(
+                  height: 20,
+                ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -118,8 +120,9 @@ class _MyAppState extends State<MyApp> {
                         children: [
                           TextButton(
                               onPressed: () async {
-                                var bondedDevices = await _myBluetooth.bondedDevices;
-                                setState((){
+                                var bondedDevices =
+                                    await _myBluetooth.bondedDevices;
+                                setState(() {
                                   _scanResults = bondedDevices;
                                 });
                                 print("bondedDevices: ${bondedDevices.length}");
@@ -127,8 +130,7 @@ class _MyAppState extends State<MyApp> {
                               child: const Text("getBondedDevices")),
                           TextButton(
                               onPressed: () async {
-                                await _myBluetooth.startScan(
-                                    withKeywords: [
+                                await _myBluetooth.startScan(withKeywords: [
                                   // "Nailpop", "Nailpop Pro",
                                   // "Snap# Kiosk", "DMP"
                                   //     "image box"
@@ -144,53 +146,58 @@ class _MyAppState extends State<MyApp> {
                       ),
                     ),
                     Container(
-                      width: MediaQuery.of(context).size.width/3*2,
+                      width: MediaQuery.of(context).size.width / 3 * 2,
                       height: 140,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                                              shrinkWrap: true,
-                                              itemCount: _scanResults.length,
-                                              itemBuilder: (BuildContext context, int index) {
-                      final item = _scanResults[index];
-                      return GestureDetector(
-                        onTap: ()  async {
-                          print("click ${item.remoteId}");
-                          print(await _myBluetooth.connect(remoteId:  item.remoteId));
+                        shrinkWrap: true,
+                        itemCount: _scanResults.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final item = _scanResults[index];
+                          return GestureDetector(
+                            onTap: () async {
+                              print("click ${item.remoteId}");
+                              print(await _myBluetooth.connect(
+                                  remoteId: item.remoteId));
+                            },
+                            child: Container(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              padding: const EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                  color: Colors.blueAccent.withOpacity(0.2)),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "Name: ${item.platformName}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text("ID: ${item.remoteId}"),
+                                  Text("bondState: ${item.bondState}"),
+                                  Text("type: ${item.type}"),
+                                ],
+                              ),
+                            ),
+                          );
                         },
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 20),
-                          padding: const EdgeInsets.all( 20),
-                          decoration: BoxDecoration(
-                            color: Colors.blueAccent.withOpacity(0.2)
-                          ),
-                          child: Column(
-                            mainAxisSize:  MainAxisSize.min,
-                            children: [
-                              Text("Name: ${item.platformName}", style:  const TextStyle(fontWeight: FontWeight.bold),),
-                              Text("ID: ${item.remoteId}"),
-                              Text("bondState: ${item.bondState}"),
-                              Text("type: ${item.type}"),
-                            ],
-                          ),
-                        ),
-                      );
-                                              },
-                                            ),
+                      ),
                     )
                   ],
                 ),
 
-
-
-
-                const Text("SEND TEXT TO DEVICE", style: TextStyle(fontWeight: FontWeight.w800),),
+                const Text(
+                  "SEND TEXT TO DEVICE",
+                  style: TextStyle(fontWeight: FontWeight.w800),
+                ),
                 TextButton(
                     onPressed: () async {
                       await _myBluetooth.sendText(value: "Hello World");
                     },
                     child: const Text("1 | Send text 'Hello World'")),
 
-              //Send File
+                //Send File
                 const Text(
                   "HOW TO SEND FILE?",
                   style: TextStyle(fontWeight: FontWeight.w800),
@@ -205,15 +212,13 @@ class _MyAppState extends State<MyApp> {
                     },
                     child: const Text("Step 1 | Choose file")),
 
-
                 const SizedBox(
                   height: 10,
                 ),
                 TextButton(
                     onPressed: () async {
-
                       if (image != null) {
-                        print( await _myBluetooth.sendFile(
+                        print(await _myBluetooth.sendFile(
                             pathImage: image?.path));
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -229,7 +234,6 @@ class _MyAppState extends State<MyApp> {
                   "NOTE!!!! You can use function 'sendCmd' to send any thing.",
                   style: TextStyle(fontWeight: FontWeight.w500),
                 ),
-
               ],
             ),
           ),
