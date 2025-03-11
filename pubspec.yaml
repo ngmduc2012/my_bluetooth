@@ -1,11 +1,12 @@
 name: my_bluetooth
-description: My Bluetooth - Connecting and transferring data to other devices using Bluetooth
-version: 1.0.2
-maintainer: Ducnguyen (Wong) and Thaodoan (Mia)
+description: My Bluetooth - Connecting and transferring data to other devices (printer) using Bluetooth
+version: 1.0.2+3
+maintainers:
+  - "Ducnguyen (Wong) <ngmduc2012@gmail.com>"
 repository: https://github.com/ngmduc2012/my_bluetooth
 
 environment:
-  sdk: ^3.5.2
+  sdk: ^3.5.0
   flutter: '>=3.3.0'
 
 dependencies:
@@ -28,3 +29,13 @@ flutter:
       ios:
         pluginClass: MyBluetooth
 
+screenshots:
+  - description: "avatar plugin"
+    path: avatar.png
+
+topics:
+  - bluetooth
+  - bluetooth-communication
+  - device-connection
+  - printer
+  - flutter-plugin

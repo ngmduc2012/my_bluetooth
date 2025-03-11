@@ -1,5 +1,15 @@
+
+
+[![GitHub](https://img.shields.io/badge/Nguyen_Duc-GitHub-black?logo=github)](https://github.com/ngmduc2012)
+_[![Buy Me A Coffee](https://img.shields.io/badge/Donate-Buy_Me_A_Coffee-blue?logo=buymeacoffee)](https://www.buymeacoffee.com/ducmng12g)_
+_[![PayPal](https://img.shields.io/badge/Donate-PayPal-blue?logo=paypal)](https://paypal.me/ngmduc)_
+_[![Sponsor](https://img.shields.io/badge/Sponsor-Become_A_Sponsor-blue?logo=githubsponsors)](https://github.com/sponsors/ngmduc2012)_
+_[![Support Me on Ko-fi](https://img.shields.io/badge/Donate-Ko_fi-red?logo=ko-fi)](https://ko-fi.com/I2I81AEJG8)_
+
+
 # Bluetooth Connection Plugin for Flutter
 A Flutter plugin for connecting and transferring data to other devices using Bluetooth. This package simplifies Bluetooth communication by providing an easy-to-use API for scanning, connecting, and exchanging 
+
 
 ## Features
 - Scan for nearby Bluetooth Device
@@ -75,9 +85,7 @@ final _myBluetooth = MyBluetooth();
 void scan() async{
   await _myBluetooth.startScan(
       withKeywords: [
-// "Nailpop", "Nailpop Pro",
-// "Snap# Kiosk", "DMP"
-//     "image box", "android_1"
+//     "name bluetooth"
       ]);
 
 }
